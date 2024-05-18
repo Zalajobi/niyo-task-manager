@@ -9,16 +9,13 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@data/*": ["./data/*"],
       "@datastore/*": ["./datastore/*"],
-      "@helpers/*": ["./helpers/*"],
       "@lib/*": ["./lib/*"],
-      "@messaging/*": ["./messaging/*"],
+      "@middleware/*": ["./middleware/*"],
       "@routes/*": ["./routes/*"],
+      "@schemas/*": ["./schemas/*"],
       "@typeorm/*": ["./typeorm/*"],
-      "@typeDesc/*": ["./types/*"],
-      "@util/*": ["./util/*"],
-      "@middlewares/*": ["./middlewares/*"]
+      "@util/*": ["./util/*"]
     },
 
     /* JavaScript Support */
