@@ -6,6 +6,7 @@ import cors from 'cors'
 import rootRouter from "@routes/index";
 import {AppDataSource} from "./data-source";
 import {errorMiddleware} from "@middleware/error";
+import {authorizeRequest} from "@middleware/jwt";
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(authorizeRequest)
 app.use('/', rootRouter);
 app.use(errorMiddleware)
 

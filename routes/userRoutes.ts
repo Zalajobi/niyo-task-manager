@@ -66,4 +66,13 @@ userRouter.post('/login', async  (req:Request, res:Response, next:NextFunction) 
   }
 })
 
+userRouter.get('/', async (req:Request, res:Response, next:NextFunction) => {
+  console.log("HELLO WORLD")
+  try {
+    return JsonApiResponse(res, 'Success', true, null, 200);
+  } catch (error) {
+    next(error);
+  }
+})
+
 export default userRouter;
