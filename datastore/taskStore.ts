@@ -11,3 +11,22 @@ export const createTask = async (taskData: z.infer<typeof createTaskRequestSchem
 
   return DefaultJsonResponse(newTask ? 'Task Created' : 'Failed to create task', {}, !!newTask)
 }
+
+export const updateTaskById = async (id: string, data: Object) => {
+  const taskRepository = taskRepo();
+
+  const updatedData = await taskRepository.update(
+    {
+      id,
+    },
+    data
+  );
+
+  return DefaultJsonResponse(
+    Number(updatedData?.affected) >= 1
+      ? 'Task Successfully Updated'
+      : 'Something Went Wrong',
+    null,
+    Number(updatedData?.affected) >= 1
+  );
+}

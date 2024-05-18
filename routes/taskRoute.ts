@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response, Router} from 'express';
-import {createTaskRequestSchema} from "@schemas/taskSchemas";
+import {createTaskRequestSchema, editTaskRequestSchema} from "@schemas/taskSchemas";
 import {getCookieDataByKey, verifyJSONToken} from "@util/index";
 import {JsonApiResponse} from "@lib/response";
-import {createTask} from "@datastore/taskStore";
+import {createTask, updateTaskById} from "@datastore/taskStore";
 
 const taskRouter = Router();
 
@@ -14,6 +14,21 @@ taskRouter.post('/create', async (req:Request, res:Response, next:NextFunction) 
 
     const newTask = await createTask(requestBody);
     return JsonApiResponse(res, newTask.message, newTask.success, newTask.data, newTask.success ? 201 : 400)
+  } catch (err) {
+    next(err)
+  }
+})
+
+taskRouter.put('/update/:id', async (req:Request, res:Response, next:NextFunction) => {
+  try {
+    const {id, ...updateBody} = editTaskRequestSchema.parse({
+      ...req.body,
+      ...req.params
+    });
+
+    const updatedTask = await updateTaskById(id, updateBody);
+
+    return JsonApiResponse(res, updatedTask.message, updatedTask.success, updatedTask.data, updatedTask.success ? 200 : 400)
   } catch (err) {
     next(err)
   }
