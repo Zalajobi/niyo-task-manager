@@ -16,6 +16,8 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
   } else {
     const { cookie: accessToken } = bearerTokenSchema.parse(req.headers);
 
+    console.log(accessToken)
+
     // If Access token is not retrieved from cookies
     if (!accessToken)
       return JsonApiResponse(res, 'Not Authorized', false, null, 401);
@@ -36,10 +38,12 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
           if (verifiedRefreshToken) {
             const { exp, iat, ...tokenPayload } = verifiedRefreshToken;
             const userExists = await getUserCountById(tokenPayload.id);
+            console.log({
+              refreshToken,
+              tokenPayload
+            })
             if (userExists > 0) {
-              const accessToken = generateJWTAccessToken(
-                tokenPayload,
-              );
+              const accessToken = generateJWTAccessToken(tokenPayload,);
               res.cookie('accessToken', accessToken, {
                 httpOnly: true,
                 secure: true,
@@ -51,6 +55,7 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
         } else {
           // Check if user exists
           const userExists = await getUserCountById(tokenUser.id);
+          console.log("Remaining time more than 5 minutes")
           if (userExists === 0) {
             return JsonApiResponse(res, 'Not Authorized', false, null, 401);
           }
