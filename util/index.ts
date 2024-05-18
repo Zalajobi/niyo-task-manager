@@ -50,3 +50,26 @@ export const getRedisKey = async (key: string) => {
 
   return await client.get(key);
 };
+
+export const getCookieDataByKey = (cookie: string, key: string) => {
+  const cookies = cookie.split(';').map((cookie) => cookie.trim());
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split('=');
+    if (name === key) {
+      return decodeURIComponent(value);
+    }
+  }
+  return null;
+};
+
+export const verifyJSONToken = (bearerToken: string): JWTDataProps | null => {
+  let jwtData: JWTDataProps | null = null;
+
+  jwt.verify(bearerToken, JWT_ACCESS_TOKEN, (err: any, user: any) => {
+    if (err) throw err;
+
+    if (user) jwtData = user;
+  });
+
+  return jwtData;
+};
