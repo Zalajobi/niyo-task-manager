@@ -1,11 +1,33 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {TaskPriorityEnum, TaskStatusEnum} from "@typeorm/entity/enum";
 import {User} from "@typeorm/entity/user";
+import {z} from "zod";
+import {createTaskRequestSchema} from "@schemas/taskSchemas";
 
 @Entity()
 export class Task {
+  constructor(data: z.infer<typeof createTaskRequestSchema>) {
+    this.title = data?.title;
+    this.description = data?.description;
+    this.due_date = new Date(data?.due_date);
+    this.priority = data?.priority as TaskPriorityEnum;
+    this.status = data?.status as TaskStatusEnum;
+    this.assigneeId = data?.assigneeId as string;
+    this.creatorId = data?.creatorId ?? '';
+  }
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({
+    nullable: true,
+  })
+  assigneeId: string
+
+  @Column({
+    nullable: false,
+  })
+  creatorId: string
 
   @Column({
     nullable: false,
