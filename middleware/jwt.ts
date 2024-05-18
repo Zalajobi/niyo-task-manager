@@ -3,6 +3,7 @@ import {bearerTokenSchema} from "@schemas/commonSchema";
 import {generateJWTAccessToken, getRedisKey, verifyJSONToken} from "@util/index";
 import {JsonApiResponse} from "@lib/response";
 import {getUserCountById} from "@datastore/userStore";
+import {FIVE_MINUTE} from "@lib/config";
 
 export const authorizeRequest = async (req: Request, res: Response, next: NextFunction) => {
   const whitelistedEndpoints = [
@@ -26,7 +27,7 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
 
         // If the remaining time is above 5 minutes, verify if the user exists
         // else, reset the accessToken and also check if the user exists
-        if (remainingTime < 5 * 60 * 1000) {
+        if (remainingTime < FIVE_MINUTE) {
           console.log("Remaining time less than 5 minutes")
           const refreshToken = await getRedisKey(tokenUser?.id);
           const verifiedRefreshToken = verifyJSONToken(refreshToken as string, false);

@@ -9,6 +9,7 @@ import {
 import {createSingleUser, getUserByEmail} from "@datastore/userStore";
 import {JsonApiResponse} from "@lib/response";
 import {NextFunction, Router, Response, Request} from "express";
+import {TWENTY_FOUR_HOURS_SECONDS} from "@lib/config";
 
 const userRouter = Router();
 
@@ -49,7 +50,7 @@ userRouter.post('/login', async  (req:Request, res:Response, next:NextFunction) 
       setRedisKey(
         user.id,
         refreshToken,
-        24 * 60 * 60
+        TWENTY_FOUR_HOURS_SECONDS
       );
 
       // Set the cookie
@@ -61,15 +62,6 @@ userRouter.post('/login', async  (req:Request, res:Response, next:NextFunction) 
     }
 
     return JsonApiResponse(res, 'Incorrect Credentials', false, null, 400);
-  } catch (error) {
-    next(error);
-  }
-})
-
-userRouter.get('/', async (req:Request, res:Response, next:NextFunction) => {
-  console.log("HELLO WORLD")
-  try {
-    return JsonApiResponse(res, 'Success', true, null, 200);
   } catch (error) {
     next(error);
   }
