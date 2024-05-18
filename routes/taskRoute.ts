@@ -47,4 +47,6 @@ taskRouter.get('/:id', async (req:Request, res:Response, next:NextFunction) => {
   }
 });
 
+taskRouter.delete
+
 export default taskRouter;

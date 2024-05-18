@@ -34,8 +34,19 @@ export const updateTaskById = async (id: string, data: Object) => {
 export const getTaskById = async (id: string) => {
   const taskRepository = taskRepo();
 
-  const task = await taskRepository.findOneBy({
-    id
+  const task = await taskRepository.findOne({
+    where: {
+      id
+    },
+    select: {
+      title: true,
+      description: true,
+      due_date: true,
+      priority: true,
+      status: true,
+      assigneeId: true,
+      created_at: true
+    }
   });
 
   return DefaultJsonResponse(task ? 'Task Found' : 'Task not found', task, !!task)
