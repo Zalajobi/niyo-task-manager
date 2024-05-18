@@ -5,6 +5,7 @@ import express from 'express'
 import cors from 'cors'
 import rootRouter from "@routes/index";
 import {AppDataSource} from "./data-source";
+import {errorMiddleware} from "@middleware/error";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(
   })
 );
 app.use('/', rootRouter);
+app.use(errorMiddleware)
 
 AppDataSource.initialize()
   .then(async () => {
