@@ -24,3 +24,7 @@ export const REDIS_HOST = process.env.REDIS_HOST!;
 export const REDIS_PORT = process.env.REDIS_PORT!;
 
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD!;
+
+export const TWENTY_FOUR_HOURS_SECONDS = 24 * 60 * 60; // 24 hours in seconds
+
+export const FIVE_MINUTE = 5 * 60 * 1000; // 5 minutes in milliseconds
