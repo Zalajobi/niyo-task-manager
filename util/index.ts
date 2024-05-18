@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import {JWT_ACCESS_TOKEN, JWT_REFRESH_TOKEN, PASSWORD_HASH_SECRET} from "@lib/config";
 import {JWTDataProps} from "@type/index.types";
+import redisClient from "@lib/redis";
 
 export const generatePasswordHash = (password: string) => {
   return crypto
@@ -34,4 +35,18 @@ export const generateJWTRefreshToken = (
   return jwt.sign(data, JWT_REFRESH_TOKEN, {
     expiresIn:  '1d',
   });
+};
+
+export const setRedisKey = async (key: string, value: string, expiry: number) => {
+  const client = redisClient.getClient();
+  await client.set(key, value, {
+    EX: expiry,
+    NX: true,
+  });
+};
+
+export const getRedisKey = async (key: string) => {
+  const client = redisClient.getClient();
+
+  return await client.get(key);
 };

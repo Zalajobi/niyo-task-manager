@@ -1,5 +1,11 @@
 import {createUserRequestSchema, userLoginRequestSchema} from "@schemas/usersSchemas";
-import {generateJWTAccessToken, generateJWTRefreshToken, generatePasswordHash, validatePassword} from "@util/index";
+import {
+  generateJWTAccessToken,
+  generateJWTRefreshToken,
+  generatePasswordHash,
+  setRedisKey,
+  validatePassword
+} from "@util/index";
 import {createSingleUser, getUserByEmail} from "@datastore/userStore";
 import {JsonApiResponse} from "@lib/response";
 import {NextFunction, Router, Response, Request} from "express";
@@ -38,6 +44,12 @@ userRouter.post('/login', async  (req:Request, res:Response, next:NextFunction) 
       );
       const refreshToken = generateJWTRefreshToken(
         jwtPayload,
+      );
+
+      setRedisKey(
+        user.id,
+        refreshToken,
+        24 * 60 * 60
       );
 
       // Set the cookie
