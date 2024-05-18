@@ -1,6 +1,7 @@
-import crypto = require('crypto');
-import {PASSWORD_HASH_SECRET} from "@lib/config";
-
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import {JWT_ACCESS_TOKEN, JWT_REFRESH_TOKEN, PASSWORD_HASH_SECRET} from "@lib/config";
+import {JWTDataProps} from "@type/index.types";
 
 export const generatePasswordHash = (password: string) => {
   return crypto
@@ -17,4 +18,20 @@ export const validatePassword = (
     .toString('hex');
 
   return generatedPasswordHash === comparePassword;
+};
+
+export const generateJWTAccessToken = (
+  data: JWTDataProps,
+) => {
+  return jwt.sign(data, JWT_ACCESS_TOKEN, {
+    expiresIn: '15m',
+  });
+};
+
+export const generateJWTRefreshToken = (
+  data: JWTDataProps,
+) => {
+  return jwt.sign(data, JWT_REFRESH_TOKEN, {
+    expiresIn:  '1d',
+  });
 };

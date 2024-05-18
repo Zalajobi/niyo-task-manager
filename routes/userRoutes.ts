@@ -1,5 +1,5 @@
 import {createUserRequestSchema, userLoginRequestSchema} from "@schemas/usersSchemas";
-import {generatePasswordHash, validatePassword} from "@util/index";
+import {generateJWTAccessToken, generateJWTRefreshToken, generatePasswordHash, validatePassword} from "@util/index";
 import {createSingleUser, getUserByEmail} from "@datastore/userStore";
 import {JsonApiResponse} from "@lib/response";
 import {NextFunction, Router, Response, Request} from "express";
@@ -28,6 +28,23 @@ userRouter.post('/login', async  (req:Request, res:Response, next:NextFunction) 
     const user = await getUserByEmail(requestBody.email);
 
     if (validatePassword(requestBody.password, user.password)) {
+      const jwtPayload = {
+        id: user.id,
+        email: user?.email,
+      };
+
+      const accessToken = generateJWTAccessToken(
+        jwtPayload,
+      );
+      const refreshToken = generateJWTRefreshToken(
+        jwtPayload,
+      );
+
+      // Set the cookie
+      res.cookie('jwt', accessToken, {
+        httpOnly: true,
+        secure: true,
+      });
       return JsonApiResponse(res, 'Success', true, null, 200);
     }
 
