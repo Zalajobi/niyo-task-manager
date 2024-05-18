@@ -33,3 +33,16 @@ export const getUserByEmail = async (email: string):Promise<User> => {
 
   return user;
 }
+
+export const getUserCountById = async (id: string): Promise<number> => {
+  const userRepository = userRepo();
+
+  const userCount = await userRepository.countBy({
+    id
+  });
+
+  if (userCount < 0)
+    throw new Error('User not found');
+
+  return userCount;
+}
