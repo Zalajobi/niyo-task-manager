@@ -41,7 +41,6 @@ export const setRedisKey = async (key: string, value: string, expiry: number) =>
   const client = redisClient.getClient();
   await client.set(key, value, {
     EX: expiry,
-    NX: true,
   });
 };
 
