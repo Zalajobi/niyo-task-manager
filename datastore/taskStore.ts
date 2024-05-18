@@ -51,3 +51,19 @@ export const getTaskById = async (id: string) => {
 
   return DefaultJsonResponse(task ? 'Task Found' : 'Task not found', task, !!task)
 }
+
+export const deleteTaskById = async (id:string) => {
+  const taskRepository = taskRepo();
+
+  const deletedTask = await taskRepository.delete({
+    id
+  });
+
+  return DefaultJsonResponse(
+    Number(deletedTask?.affected) >= 1
+      ? 'Task Successfully Deleted'
+      : 'Something Went Wrong',
+    null,
+    Number(deletedTask?.affected) >= 1
+  );
+}

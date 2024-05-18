@@ -2,7 +2,7 @@ import {NextFunction, Request, Response, Router} from 'express';
 import {createTaskRequestSchema, editTaskRequestSchema} from "@schemas/taskSchemas";
 import {getCookieDataByKey, verifyJSONToken} from "@util/index";
 import {JsonApiResponse} from "@lib/response";
-import {createTask, getTaskById, updateTaskById} from "@datastore/taskStore";
+import {createTask, deleteTaskById, getTaskById, updateTaskById} from "@datastore/taskStore";
 import {getDataByIdRequestSchema} from "@schemas/commonSchema";
 
 const taskRouter = Router();
@@ -47,6 +47,16 @@ taskRouter.get('/:id', async (req:Request, res:Response, next:NextFunction) => {
   }
 });
 
-taskRouter.delete
+taskRouter.delete('/delete/:id', async (req:Request, res:Response, next:NextFunction) => {
+  try {
+    const {id} = getDataByIdRequestSchema.parse(req.params)
+
+    const task = await deleteTaskById(id);
+
+    return JsonApiResponse(res, task.message, task.success, task.data, task.success ? 200 : 400)
+  } catch (err) {
+    next(err)
+  }
+});
 
 export default taskRouter;
