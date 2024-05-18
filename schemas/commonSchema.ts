@@ -27,3 +27,7 @@ export const prioritySchema = z.preprocess((val) => {
 
   return val
 }, z.enum(['LOW', 'MEDIUM', 'HIGH']))
+
+export const getDataByIdRequestSchema = z.object({
+  id: z.string(),
+})

@@ -30,3 +30,13 @@ export const updateTaskById = async (id: string, data: Object) => {
     Number(updatedData?.affected) >= 1
   );
 }
+
+export const getTaskById = async (id: string) => {
+  const taskRepository = taskRepo();
+
+  const task = await taskRepository.findOneBy({
+    id
+  });
+
+  return DefaultJsonResponse(task ? 'Task Found' : 'Task not found', task, !!task)
+}
