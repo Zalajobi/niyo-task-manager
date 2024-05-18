@@ -62,10 +62,10 @@ export const getCookieDataByKey = (cookie: string, key: string) => {
   return null;
 };
 
-export const verifyJSONToken = (bearerToken: string): JWTDataProps | null => {
-  let jwtData: JWTDataProps | null = null;
+export const verifyJSONToken = (bearerToken: string, isAccessToken: boolean): JWTDataProps => {
+  let jwtData: JWTDataProps = {} as JWTDataProps;
 
-  jwt.verify(bearerToken, JWT_ACCESS_TOKEN, (err: any, user: any) => {
+  jwt.verify(bearerToken, isAccessToken ? JWT_ACCESS_TOKEN : JWT_REFRESH_TOKEN, (err: any, user: any) => {
     if (err) throw err;
 
     if (user) jwtData = user;

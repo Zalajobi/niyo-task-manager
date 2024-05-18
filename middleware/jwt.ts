@@ -11,19 +11,16 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
   ];
 
   if (whitelistedEndpoints.some((whitelist) => req.url.includes(whitelist))) {
-    console.log("Whitelisted Address")
     next();
   } else {
     const { cookie: accessToken } = bearerTokenSchema.parse(req.headers);
-
-    console.log(accessToken)
 
     // If Access token is not retrieved from cookies
     if (!accessToken)
       return JsonApiResponse(res, 'Not Authorized', false, null, 401);
 
     try {
-      const tokenUser = verifyJSONToken(accessToken);
+      const tokenUser = verifyJSONToken(accessToken, true);
       if (tokenUser) {
         const remainingTime = Number(tokenUser?.exp) * 1000 - Date.now();
 
@@ -32,16 +29,12 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
         if (remainingTime < 5 * 60 * 1000) {
           console.log("Remaining time less than 5 minutes")
           const refreshToken = await getRedisKey(tokenUser?.id);
-          const verifiedRefreshToken = verifyJSONToken(refreshToken ?? '');
+          const verifiedRefreshToken = verifyJSONToken(refreshToken as string, false);
 
           // If the refresh token is verified, verify the user and generate a new access token
           if (verifiedRefreshToken) {
             const { exp, iat, ...tokenPayload } = verifiedRefreshToken;
             const userExists = await getUserCountById(tokenPayload.id);
-            console.log({
-              refreshToken,
-              tokenPayload
-            })
             if (userExists > 0) {
               const accessToken = generateJWTAccessToken(tokenPayload,);
               res.cookie('accessToken', accessToken, {
