@@ -1,7 +1,8 @@
-import {Column, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {TaskPriorityEnum, TaskStatusEnum} from "@typeorm/entity/enum";
 import {User} from "@typeorm/entity/user";
 
+@Entity()
 export class Task {
   @PrimaryGeneratedColumn('uuid')
   id: string;

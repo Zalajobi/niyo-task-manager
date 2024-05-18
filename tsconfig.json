@@ -11,7 +11,7 @@
     "paths": {
       "@datastore/*": ["./datastore/*"],
       "@lib/*": ["./lib/*"],
-      "@middlewares/*": ["./middlewares/*"],
+      "@middleware/*": ["./middleware/*"],
       "@routes/*": ["./routes/*"],
       "@schemas/*": ["./schemas/*"],
       "@typeorm/*": ["./typeorm/*"],

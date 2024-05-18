@@ -1,6 +1,7 @@
-import {Column, CreateDateColumn, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Task} from "@typeorm/entity/task";
 
+@Entity()
 export class User {
 
   @PrimaryGeneratedColumn('uuid')

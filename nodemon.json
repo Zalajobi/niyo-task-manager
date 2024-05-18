@@ -1,0 +1,17 @@
+{
+  "watch": [
+    "datastore",
+    "lib",
+    "middleware",
+    "routes",
+    "schemas",
+    "typeorm",
+    "util",
+    "node_modules",
+    "index.ts",
+    "data-source.ts"
+  ],
+  "ext": ".ts,.js",
+  "ignore": [],
+  "exec": "npx ts-node index.ts"
+}

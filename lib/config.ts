@@ -9,3 +9,5 @@ export const DATABASE_USERNAME = process.env.DATABASE_USERNAME!;
 export const DATABASE_HOST = process.env.DATABASE_HOST!;
 
 export const DATABASE_PORT = process.env.DATABASE_PORT!;
+
+export const BASE_URL = process.env.TASK_MANAGER_BASE_URL!;
