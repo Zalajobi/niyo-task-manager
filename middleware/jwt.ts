@@ -36,11 +36,12 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
             const { exp, iat, ...tokenPayload } = verifiedRefreshToken;
             const userExists = await getUserCountById(tokenPayload.id);
             if (userExists > 0) {
-              const accessToken = generateJWTAccessToken(tokenPayload,);
-              res.cookie('accessToken', accessToken, {
+              const accessToken = generateJWTAccessToken(tokenPayload);
+              res.cookie('jwt', accessToken, {
                 httpOnly: true,
                 secure: true,
               });
+              console.log("Access Token Refreshed")
             } else {
               return JsonApiResponse(res, 'Not Authorized', false, null, 401);
             }
