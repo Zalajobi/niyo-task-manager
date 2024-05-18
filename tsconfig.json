@@ -15,6 +15,7 @@
       "@routes/*": ["./routes/*"],
       "@schemas/*": ["./schemas/*"],
       "@typeorm/*": ["./typeorm/*"],
+      "@type/*": ["./type/*"],
       "@util/*": ["./util/*"]
     },
 
