@@ -1,6 +1,6 @@
-import {createUserRequestSchema} from "@schemas/usersSchemas";
-import {generatePasswordHash} from "@util/index";
-import {createSingleUser} from "@datastore/userStore";
+import {createUserRequestSchema, userLoginRequestSchema} from "@schemas/usersSchemas";
+import {generatePasswordHash, validatePassword} from "@util/index";
+import {createSingleUser, getUserByEmail} from "@datastore/userStore";
 import {JsonApiResponse} from "@lib/response";
 import {NextFunction, Router, Response, Request} from "express";
 
@@ -14,7 +14,24 @@ userRouter.post('/create', async (req:Request, res:Response, next:NextFunction) 
 
     const newUser = await createSingleUser(requestBody);
 
+
     return JsonApiResponse(res, newUser.message, newUser?.success, null, newUser.success ? 201 : 400)
+  } catch (error) {
+    next(error);
+  }
+})
+
+userRouter.post('/login', async  (req:Request, res:Response, next:NextFunction) => {
+  try {
+    const requestBody = userLoginRequestSchema.parse(req.body);
+
+    const user = await getUserByEmail(requestBody.email);
+
+    if (validatePassword(requestBody.password, user.password)) {
+      return JsonApiResponse(res, 'Success', true, null, 200);
+    }
+
+    return JsonApiResponse(res, 'Incorrect Credentials', false, null, 400);
   } catch (error) {
     next(error);
   }

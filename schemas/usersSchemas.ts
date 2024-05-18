@@ -6,3 +6,8 @@ export const createUserRequestSchema = z.object({
   first_name: z.string().min(4, 'First name must be at least 4 characters long'),
   last_name: z.string().min(4, 'Last name must be at least 4 characters long'),
 })
+
+export const userLoginRequestSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string(),
+})
