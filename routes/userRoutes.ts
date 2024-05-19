@@ -10,7 +10,6 @@ import {createSingleUser, getUserByEmail} from "@datastore/userStore";
 import {JsonApiResponse} from "@lib/response";
 import express, {NextFunction, Router, Response, Request} from "express";
 import {TWENTY_FOUR_HOURS_SECONDS} from "@lib/config";
-import * as console from "node:console";
 
 const userRouter = Router();
 userRouter.use(express.json());
@@ -20,11 +19,8 @@ userRouter.post('/create', async (req:Request, res:Response, next:NextFunction) 
     const requestBody = createUserRequestSchema.parse(req.body);
     requestBody.password = generatePasswordHash(requestBody.password);
 
-
     const newUser = await createSingleUser(requestBody);
-
-
-    return JsonApiResponse(res, newUser.message, newUser?.success, null, newUser.success ? 201 : 400)
+    return JsonApiResponse(res, newUser.message, !!newUser, null, newUser ? 201 : 400)
   } catch (error) {
     next(error);
   }
