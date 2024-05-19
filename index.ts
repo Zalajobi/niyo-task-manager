@@ -7,10 +7,10 @@ import rootRouter from '@routes/index';
 import { AppDataSource } from './data-source';
 import { errorMiddleware } from '@middleware/error';
 import { authorizeRequest } from '@middleware/jwt';
-import * as console from 'node:console';
+import { createServer } from 'http';
+import {initializeWebSocket} from "@lib/webSocket";
 
 const app = express();
-
 app.use(express.json());
 app.use(
   cors({
@@ -29,6 +29,10 @@ AppDataSource.initialize()
   })
   .catch((error) => console.log(error));
 
-app.listen(process.env.PORT ?? 3000, () => {
+const server = createServer(app)
+
+server.listen(process.env.PORT ?? 3000, () => {
   console.log(`Example app listening on port ${process.env.PORT ?? 3000}`);
 });
+
+initializeWebSocket(server);
