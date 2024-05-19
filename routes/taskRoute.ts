@@ -4,6 +4,7 @@ import { getCookieDataByKey, verifyJSONToken } from '@util/index';
 import { JsonApiResponse } from '@lib/response';
 import { createTask, deleteTaskById, getTaskById, updateTaskById } from '@datastore/taskStore';
 import { getDataByIdRequestSchema } from '@schemas/commonSchema';
+import { broadcastMessage } from '@lib/webSocket';
 
 const taskRouter = Router();
 taskRouter.use(express.json());
@@ -11,11 +12,22 @@ taskRouter.use(express.json());
 taskRouter.post('/create', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const requestBody = createTaskRequestSchema.parse(req.body);
-    requestBody.creatorId =
-      verifyJSONToken(getCookieDataByKey(req?.headers?.cookie ?? '', 'jwt') as string, true).id ??
-      '';
+    const user = verifyJSONToken(
+      getCookieDataByKey(req?.headers?.cookie ?? '', 'jwt') as string,
+      true,
+    );
+    requestBody.creatorId = user?.id ?? '';
 
     const newTask = await createTask(requestBody);
+    broadcastMessage(
+      JSON.stringify({
+        message: 'New Task Created By User',
+        title: requestBody.title,
+        dueDate: requestBody.due_date,
+        priority: requestBody.priority,
+        creator: user.email,
+      }),
+    );
     return JsonApiResponse(res, newTask.message, !!newTask, newTask.data, newTask ? 201 : 400);
   } catch (err) {
     next(err);

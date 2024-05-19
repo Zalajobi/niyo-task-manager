@@ -28,6 +28,7 @@ Ensure you have PostgresSQL installed on your local machine. You can download th
 create a database and user for the application.
 
 #### Redis
+
 Ensure you have Redis installed on your local machine. You can download the installer from the [official website](https://redis.io/). Alternatively, you could use a remote redis provider at [RedisLabs](https://redislabs.com/).
 
 #### Environment Variables

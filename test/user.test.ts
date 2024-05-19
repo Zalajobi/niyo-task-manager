@@ -8,10 +8,11 @@ import {
   validatePassword,
 } from '@util/index';
 import { createUserRequestSchema, userLoginRequestSchema } from '@schemas/usersSchemas';
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Response } from 'express';
 import { DefaultJsonResponse, JsonApiResponse } from '@lib/response';
 import { userRepo } from '@typeorm/repositories/userRepo';
 import userRouter from '@routes/userRoutes';
+import { broadcastMessage, initializeWebSocket } from '@lib/webSocket';
 
 jest.mock('@schemas/usersSchemas', () => ({
   createUserRequestSchema: {
@@ -20,6 +21,11 @@ jest.mock('@schemas/usersSchemas', () => ({
   userLoginRequestSchema: {
     parse: jest.fn(),
   },
+}));
+
+jest.mock('@lib/webSocket', () => ({
+  initializeWebSocket: jest.fn(),
+  broadcastMessage: jest.fn(),
 }));
 
 const mockRepository = {
@@ -152,6 +158,8 @@ describe('POST /create', () => {
     );
     (createUserRequestSchema.parse as jest.Mock).mockImplementation((data: any) => data);
     (generatePasswordHash as jest.Mock).mockImplementation((password: string) => password);
+    (initializeWebSocket as jest.Mock).mockImplementation(() => ({}));
+    (broadcastMessage as jest.Mock).mockImplementation((message: string) => message);
     (createSingleUser as jest.Mock)
       .mockImplementation((data: any) => data)(DefaultJsonResponse as jest.Mock)
       .mockImplementation((message: string, data: any, success: boolean) => ({
