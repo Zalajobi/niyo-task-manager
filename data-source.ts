@@ -1,8 +1,14 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import {DATABASE_HOST, DATABASE_NAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USERNAME} from "@lib/config";
-import {User} from "@typeorm/entity/user";
-import {Task} from "@typeorm/entity/task";
+import {
+  DATABASE_HOST,
+  DATABASE_NAME,
+  DATABASE_PASSWORD,
+  DATABASE_PORT,
+  DATABASE_USERNAME,
+} from '@lib/config';
+import { User } from '@typeorm/entity/user';
+import { Task } from '@typeorm/entity/task';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -13,13 +19,7 @@ export const AppDataSource = new DataSource({
   database: DATABASE_NAME,
   synchronize: true,
   logging: false,
-  entities: [
-    User,
-    Task
-  ],
-  migrations: [
-    User,
-    Task
-  ],
+  entities: [User, Task],
+  migrations: [User, Task],
   subscribers: [],
 });

@@ -9,23 +9,22 @@ import {
   TransactionNotStartedError,
   UpdateValuesMissingError,
 } from 'typeorm';
-import {JsonWebTokenError, TokenExpiredError} from 'jsonwebtoken';
-import {JsonApiResponse} from "@lib/response";
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import { JsonApiResponse } from '@lib/response';
 
 export const errorMiddleware = async (
   err: any,
   _req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
-
   // Schema Validation Error
   if (err instanceof ZodError) {
     return JsonApiResponse(res, 'Schema Validation Error', false, null, 400, {
       type: 'validation_error',
       message: 'Validation error',
       errors: err.format(),
-      name: err.name
+      name: err.name,
     });
   }
 
@@ -78,19 +77,19 @@ export const errorMiddleware = async (
   // JWT Error
   if (err instanceof JsonWebTokenError) {
     return JsonApiResponse(res, 'JWT Token Error', false, null, 401, {
-        type: 'jwt_error',
-        message: err.message,
-        name: err.name,
+      type: 'jwt_error',
+      message: err.message,
+      name: err.name,
     });
   }
 
   // Error Updating Data - Missing Columns to update
   if (err instanceof UpdateValuesMissingError) {
     JsonApiResponse(res, 'Missing Update Body', false, null, 500, {
-        type: 'postgres_error',
-        message: err.message,
-        name: err.name,
-      });
+      type: 'postgres_error',
+      message: err.message,
+      name: err.name,
+    });
     return;
   }
 
@@ -127,8 +126,8 @@ export const errorMiddleware = async (
   if (err instanceof Error) {
     JsonApiResponse(res, 'Error', false, null, 500, {
       type: 'api_error',
-        message: err.message,
-        name: err.name,
+      message: err.message,
+      name: err.name,
     });
     return;
   }

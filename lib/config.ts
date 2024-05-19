@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import * as process from "node:process";
+import * as process from 'node:process';
 
 export const DATABASE_NAME = process.env.DATABASE_NAME!;
 

@@ -1,7 +1,7 @@
-import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {Task} from "@typeorm/entity/task";
-import {createUserRequestSchema} from "@schemas/usersSchemas";
-import {z} from "zod";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Task } from '@typeorm/entity/task';
+import { createUserRequestSchema } from '@schemas/usersSchemas';
+import { z } from 'zod';
 
 @Entity()
 export class User {
@@ -9,7 +9,7 @@ export class User {
     this.email = data?.email;
     this.password = data?.password;
     this.first_name = data?.first_name;
-    this.last_name = data?.last_name
+    this.last_name = data?.last_name;
   }
 
   @PrimaryGeneratedColumn('uuid')
@@ -17,7 +17,7 @@ export class User {
 
   @Column({
     nullable: false,
-    unique: true
+    unique: true,
   })
   email: string;
 
@@ -27,7 +27,7 @@ export class User {
   password: string;
 
   @Column({
-    nullable: false
+    nullable: false,
   })
   first_name: string;
 
@@ -40,9 +40,9 @@ export class User {
   created_at: Date;
 
   // Relations
-  @OneToMany(() => Task, task => task.creator)
+  @OneToMany(() => Task, (task) => task.creator)
   createdTasks: Task[];
 
-  @OneToMany(() => Task, task => task.assignee)
+  @OneToMany(() => Task, (task) => task.assignee)
   assignedTasks: Task[];
 }

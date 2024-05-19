@@ -1,14 +1,14 @@
-import request from "supertest";
-import express from "express";
-import taskRoute from "@routes/taskRoute";
-import {createTaskRequestSchema, editTaskRequestSchema} from "@schemas/taskSchemas";
-import {generateJWTAccessToken, getCookieDataByKey, verifyJSONToken} from "@util/index";
-import {createTask, deleteTaskById, getTaskById, updateTaskById} from "@datastore/taskStore";
-import {DefaultJsonResponse, JsonApiResponse} from "@lib/response";
-import {getDataByIdRequestSchema} from "@schemas/commonSchema";
+import request from 'supertest';
+import express from 'express';
+import taskRoute from '@routes/taskRoute';
+import { createTaskRequestSchema, editTaskRequestSchema } from '@schemas/taskSchemas';
+import { generateJWTAccessToken, getCookieDataByKey, verifyJSONToken } from '@util/index';
+import { createTask, deleteTaskById, getTaskById, updateTaskById } from '@datastore/taskStore';
+import { DefaultJsonResponse, JsonApiResponse } from '@lib/response';
+import { getDataByIdRequestSchema } from '@schemas/commonSchema';
 
 const app = express();
-app.use('/task', taskRoute)
+app.use('/task', taskRoute);
 app.use(express.json());
 
 jest.mock('@util/index', () => ({
@@ -59,21 +59,20 @@ describe('POST /create', () => {
     (getCookieDataByKey as jest.Mock).mockImplementation((data: any) => data);
     (generateJWTAccessToken as jest.Mock).mockImplementation((data: any) => data);
     (createTask as jest.Mock).mockImplementation((data: any) => data);
-    (JsonApiResponse as jest.Mock).mockImplementation(
-      (res, message, success, _, statusCode) =>
-        res.status(statusCode).send({ message, success })
+    (JsonApiResponse as jest.Mock).mockImplementation((res, message, success, _, statusCode) =>
+      res.status(statusCode).send({ message, success }),
     );
-    (DefaultJsonResponse as jest.Mock).mockImplementation((message:string, data:any, success:boolean) => ({
-      message,
-      data,
-      success,
-    }));
-  })
+    (DefaultJsonResponse as jest.Mock).mockImplementation(
+      (message: string, data: any, success: boolean) => ({
+        message,
+        data,
+        success,
+      }),
+    );
+  });
 
   it('should create a new task', async () => {
-    const response = await request(app)
-      .post('/task/create')
-      .send(newTaskData);
+    const response = await request(app).post('/task/create').send(newTaskData);
 
     expect(response.body.success).toBe(true);
     expect(response.statusCode).toBe(201);
@@ -91,9 +90,7 @@ describe('POST /create', () => {
       status: 'Pending',
     };
 
-    const response = await request(app)
-      .post('/task/create')
-      .send(invalidTaskData);
+    const response = await request(app).post('/task/create').send(invalidTaskData);
 
     expect(response.statusCode).toBe(500);
     expect(JSON.stringify(response.error)).toMatch(/Validation failed/i);
@@ -116,21 +113,20 @@ describe('PUT /update', () => {
     (generateJWTAccessToken as jest.Mock).mockImplementation((data: any) => data);
     (createTask as jest.Mock).mockImplementation((data: any) => data);
     (updateTaskById as jest.Mock).mockImplementation((data: any) => data);
-    (JsonApiResponse as jest.Mock).mockImplementation(
-      (res, message, success, _, statusCode) =>
-        res.status(statusCode).send({ message, success })
+    (JsonApiResponse as jest.Mock).mockImplementation((res, message, success, _, statusCode) =>
+      res.status(statusCode).send({ message, success }),
     );
-    (DefaultJsonResponse as jest.Mock).mockImplementation((message:string, data:any, success:boolean) => ({
-      message,
-      data,
-      success,
-    }));
-  })
+    (DefaultJsonResponse as jest.Mock).mockImplementation(
+      (message: string, data: any, success: boolean) => ({
+        message,
+        data,
+        success,
+      }),
+    );
+  });
 
   it('should update a new task', async () => {
-    const response = await request(app)
-      .put(`/task/update/123456789`)
-      .send(updateTask);
+    const response = await request(app).put(`/task/update/123456789`).send(updateTask);
 
     expect(response.body.success).toBe(true);
     expect(response.statusCode).toBe(200);
@@ -148,9 +144,7 @@ describe('PUT /update', () => {
       status: 'Pending',
     };
 
-    const response = await request(app)
-      .put('/task/update/123456789')
-      .send(invalidTaskData);
+    const response = await request(app).put('/task/update/123456789').send(invalidTaskData);
 
     expect(response.statusCode).toBe(500);
     expect(JSON.stringify(response.error)).toMatch(/Validation failed/i);
@@ -172,20 +166,20 @@ describe('DELETE /delete', () => {
     (getCookieDataByKey as jest.Mock).mockImplementation((data: any) => data);
     (generateJWTAccessToken as jest.Mock).mockImplementation((data: any) => data);
     (deleteTaskById as jest.Mock).mockImplementation((data: any) => data);
-    (JsonApiResponse as jest.Mock).mockImplementation(
-      (res, message, success, _, statusCode) =>
-        res.status(statusCode).send({ message, success })
+    (JsonApiResponse as jest.Mock).mockImplementation((res, message, success, _, statusCode) =>
+      res.status(statusCode).send({ message, success }),
     );
-    (DefaultJsonResponse as jest.Mock).mockImplementation((message:string, data:any, success:boolean) => ({
-      message,
-      data,
-      success,
-    }));
-  })
+    (DefaultJsonResponse as jest.Mock).mockImplementation(
+      (message: string, data: any, success: boolean) => ({
+        message,
+        data,
+        success,
+      }),
+    );
+  });
 
   it('should delete a new task', async () => {
-    const response = await request(app)
-      .delete(`/task/delete/123456789`)
+    const response = await request(app).delete(`/task/delete/123456789`);
 
     expect(response.body.success).toBe(true);
     expect(response.statusCode).toBe(200);
@@ -195,10 +189,9 @@ describe('DELETE /delete', () => {
     (deleteTaskById as jest.Mock).mockRejectedValue(new Error(`No task with such Id`));
     (JsonApiResponse as jest.Mock).mockImplementation(
       (res: any, message: string, success: boolean, _: any, statusCode: number) =>
-        res.status(statusCode).send({ message, success })
+        res.status(statusCode).send({ message, success }),
     );
-    const response = await request(app)
-      .delete('/task/delete/123456789')
+    const response = await request(app).delete('/task/delete/123456789');
 
     expect(response.statusCode).toBe(500);
     expect(JSON.stringify(response.error)).toMatch(/No task with such Id/i);
@@ -220,20 +213,20 @@ describe('GET /', () => {
     (getCookieDataByKey as jest.Mock).mockImplementation((data: any) => data);
     (generateJWTAccessToken as jest.Mock).mockImplementation((data: any) => data);
     (getTaskById as jest.Mock).mockImplementation((data: any) => data);
-    (JsonApiResponse as jest.Mock).mockImplementation(
-      (res, message, success, _, statusCode) =>
-        res.status(statusCode).send({ message, success })
+    (JsonApiResponse as jest.Mock).mockImplementation((res, message, success, _, statusCode) =>
+      res.status(statusCode).send({ message, success }),
     );
-    (DefaultJsonResponse as jest.Mock).mockImplementation((message:string, data:any, success:boolean) => ({
-      message,
-      data,
-      success,
-    }));
-  })
+    (DefaultJsonResponse as jest.Mock).mockImplementation(
+      (message: string, data: any, success: boolean) => ({
+        message,
+        data,
+        success,
+      }),
+    );
+  });
 
   it('should get task by the id', async () => {
-    const response = await request(app)
-      .get(`/task/123456789`)
+    const response = await request(app).get(`/task/123456789`);
 
     expect(response.body.success).toBe(true);
     expect(response.statusCode).toBe(200);
@@ -243,10 +236,9 @@ describe('GET /', () => {
     (getTaskById as jest.Mock).mockRejectedValue(new Error(`No task with such Id`));
     (JsonApiResponse as jest.Mock).mockImplementation(
       (res: any, message: string, success: boolean, _: any, statusCode: number) =>
-        res.status(statusCode).send({ message, success })
+        res.status(statusCode).send({ message, success }),
     );
-    const response = await request(app)
-      .get('/task/123456789')
+    const response = await request(app).get('/task/123456789');
 
     expect(response.statusCode).toBe(500);
     expect(JSON.stringify(response.error)).toMatch(/No task with such Id/i);
