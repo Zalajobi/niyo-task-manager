@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response, Router} from 'express';
+import express, {NextFunction, Request, Response, Router} from 'express';
 import {createTaskRequestSchema, editTaskRequestSchema} from "@schemas/taskSchemas";
 import {getCookieDataByKey, verifyJSONToken} from "@util/index";
 import {JsonApiResponse} from "@lib/response";
@@ -6,6 +6,7 @@ import {createTask, deleteTaskById, getTaskById, updateTaskById} from "@datastor
 import {getDataByIdRequestSchema} from "@schemas/commonSchema";
 
 const taskRouter = Router();
+taskRouter.use(express.json())
 
 taskRouter.post('/create', async (req:Request, res:Response, next:NextFunction) => {
   try {
