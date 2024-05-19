@@ -18,11 +18,9 @@ export const errorMiddleware = async (
   res: Response,
   _next: NextFunction
 ) => {
-  console.log('Handle Middleware Error');
 
   // Schema Validation Error
   if (err instanceof ZodError) {
-    console.log('Schema Validation Error');
     return JsonApiResponse(res, 'Schema Validation Error', false, null, 400, {
       type: 'validation_error',
       message: 'Validation error',
@@ -33,7 +31,6 @@ export const errorMiddleware = async (
 
   // Query Failed Error
   if (err instanceof QueryFailedError) {
-    console.log('Database Query Failed');
     return JsonApiResponse(res, 'Query Failed Error', false, null, 500, {
       type: 'database_error',
       message: err.message,
@@ -44,7 +41,6 @@ export const errorMiddleware = async (
 
   // Entity Not Found
   if (err instanceof EntityNotFoundError) {
-    console.log('Entity Not Found');
     return JsonApiResponse(res, 'Entity Not Found', false, null, 404, {
       type: 'database_error',
       message: err.message,
@@ -54,7 +50,6 @@ export const errorMiddleware = async (
 
   // Query Runner Already Released Error
   if (err instanceof QueryRunnerAlreadyReleasedError) {
-    console.log('Query Runner Already Released');
     return JsonApiResponse(res, 'Query Runner Already Released', false, null, 500, {
       type: 'database_error',
       message: err.message,
@@ -64,7 +59,6 @@ export const errorMiddleware = async (
 
   // Transaction Already Started Error
   if (err instanceof TransactionAlreadyStartedError) {
-    console.log('Transaction Already Started');
     JsonApiResponse(res, 'Transaction Already Started', false, null, 500, {
       type: 'database_error',
       message: 'Transaction already started',
@@ -74,7 +68,6 @@ export const errorMiddleware = async (
 
   // Transaction Not Started Error
   if (err instanceof TransactionNotStartedError) {
-    console.log('Transaction Not Started');
     return JsonApiResponse(res, 'Transaction Not Started', false, null, 500, {
       type: 'database_error',
       message: 'Transaction not started',
@@ -84,7 +77,6 @@ export const errorMiddleware = async (
 
   // JWT Error
   if (err instanceof JsonWebTokenError) {
-    console.log('JWT Error');
     return JsonApiResponse(res, 'JWT Token Error', false, null, 401, {
         type: 'jwt_error',
         message: err.message,
@@ -94,7 +86,6 @@ export const errorMiddleware = async (
 
   // Error Updating Data - Missing Columns to update
   if (err instanceof UpdateValuesMissingError) {
-    console.log('Missing Update Body');
     JsonApiResponse(res, 'Missing Update Body', false, null, 500, {
         type: 'postgres_error',
         message: err.message,
@@ -105,7 +96,6 @@ export const errorMiddleware = async (
 
   // Entity Not Found Error - TypeORM Error
   if (err instanceof EntityPropertyNotFoundError) {
-    console.log('Entity Property Not Found');
     JsonApiResponse(res, 'Entity Property Not Found', false, null, 500, {
       type: 'postgres_error',
       message: err.message,
@@ -116,7 +106,6 @@ export const errorMiddleware = async (
 
   // Badly Formed JSON Error From Post request
   if (err instanceof SyntaxError && 'body' in err) {
-    console.log('Bad JSON');
     JsonApiResponse(res, 'Bad JSON', false, null, 400, {
       type: 'bad_json',
       message: err.message,
@@ -127,7 +116,6 @@ export const errorMiddleware = async (
 
   // JWT TOKEN Expired Error
   if (err instanceof TokenExpiredError) {
-    console.log('JWT Token Expired');
     return JsonApiResponse(res, 'Token Expired', false, null, 401, {
       type: 'jwt_error',
       message: 'Token Expired',
@@ -137,7 +125,6 @@ export const errorMiddleware = async (
 
   // Generic Error
   if (err instanceof Error) {
-    console.log('General Error');
     JsonApiResponse(res, 'Error', false, null, 500, {
       type: 'api_error',
         message: err.message,

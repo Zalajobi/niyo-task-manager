@@ -7,6 +7,7 @@ import rootRouter from "@routes/index";
 import {AppDataSource} from "./data-source";
 import {errorMiddleware} from "@middleware/error";
 import {authorizeRequest} from "@middleware/jwt";
+import * as console from "node:console";
 
 const app = express();
 
@@ -27,6 +28,7 @@ AppDataSource.initialize()
     console.log('Initialised TypeORM...');
   })
   .catch((error) => console.log(error));
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Example app listening on port ${process.env.PORT}`);
