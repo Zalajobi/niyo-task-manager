@@ -3,8 +3,10 @@ import express from "express";
 import taskRoute from "@routes/taskRoute";
 import {createTaskRequestSchema, editTaskRequestSchema} from "@schemas/taskSchemas";
 import {generateJWTAccessToken, getCookieDataByKey, verifyJSONToken} from "@util/index";
-import {createTask, updateTaskById} from "@datastore/taskStore";
+import {createTask, deleteTaskById, updateTaskById} from "@datastore/taskStore";
 import {DefaultJsonResponse, JsonApiResponse} from "@lib/response";
+import {getDataByIdRequestSchema} from "@schemas/commonSchema";
+import {createSingleUser} from "@datastore/userStore";
 
 
 const app = express();
@@ -28,18 +30,9 @@ jest.mock('@lib/response', () => ({
 
 jest.mock('@datastore/taskStore', () => ({
   createTask: jest.fn(),
-  updateTaskById: jest.fn()
+  updateTaskById: jest.fn(),
+  deleteTaskById: jest.fn()
 }));
-
-// const mockRepository = {
-//   findOne: jest.fn(),
-//   save: jest.fn(),
-//   create: jest.fn(),
-//   update: jest.fn(),
-//   delete: jest.fn(),
-// };
-//
-// (taskRepo as jest.Mock).mockReturnValue(mockRepository);
 
 jest.mock('@schemas/taskSchemas', () => ({
   createTaskRequestSchema: {
@@ -112,7 +105,7 @@ describe('POST /create', () => {
   });
 });
 
-describe('POST /update', () => {
+describe('PUT /update', () => {
   const updateTask = {
     title: 'Update Task',
     description: 'This is a test task',
@@ -122,7 +115,6 @@ describe('POST /update', () => {
   };
 
   beforeEach(() => {
-    (createTaskRequestSchema.parse as jest.Mock).mockImplementation((data: any) => data);
     (editTaskRequestSchema.parse as jest.Mock).mockImplementation((data: any) => data);
     (verifyJSONToken as jest.Mock).mockImplementation((data: any) => data);
     (getCookieDataByKey as jest.Mock).mockImplementation((data: any) => data);
@@ -169,3 +161,53 @@ describe('POST /update', () => {
     expect(JSON.stringify(response.error)).toMatch(/Validation failed/i);
   });
 });
+
+describe('DELETE /delete', () => {
+  const updateTask = {
+    title: 'Update Task',
+    description: 'This is a test task',
+    due_date: '2024-05-30',
+    priority: 'High',
+    status: 'Pending',
+  };
+
+  beforeEach(() => {
+    (getDataByIdRequestSchema.parse as jest.Mock).mockImplementation((data: any) => data);
+    (verifyJSONToken as jest.Mock).mockImplementation((data: any) => data);
+    (getCookieDataByKey as jest.Mock).mockImplementation((data: any) => data);
+    (generateJWTAccessToken as jest.Mock).mockImplementation((data: any) => data);
+    (deleteTaskById as jest.Mock).mockImplementation((data: any) => data);
+    (JsonApiResponse as jest.Mock).mockImplementation(
+      (res, message, success, _, statusCode) =>
+        res.status(statusCode).send({ message, success })
+    );
+    (DefaultJsonResponse as jest.Mock).mockImplementation((message:string, data:any, success:boolean) => ({
+      message,
+      data,
+      success,
+    }));
+  })
+
+  it('should delete a new task', async () => {
+    const response = await request(app)
+      .delete(`/task/delete/123456789`)
+
+    expect(response.body.success).toBe(true);
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('should return 500 fir invalid task id', async () => {
+    (deleteTaskById as jest.Mock).mockRejectedValue(new Error(`No task with such Id`));
+    (JsonApiResponse as jest.Mock).mockImplementation(
+      (res: any, message: string, success: boolean, _: any, statusCode: number) =>
+        res.status(statusCode).send({ message, success })
+    );
+    const response = await request(app)
+      .delete('/task/delete/123456789')
+
+    expect(response.statusCode).toBe(500);
+    expect(JSON.stringify(response.error)).toMatch(/No task with such Id/i);
+  });
+});
+
+

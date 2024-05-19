@@ -54,7 +54,7 @@ taskRouter.delete('/delete/:id', async (req:Request, res:Response, next:NextFunc
 
     const task = await deleteTaskById(id);
 
-    return JsonApiResponse(res, task.message, task.success, task.data, task.success ? 200 : 400)
+    return JsonApiResponse(res, task.message, !!task, task.data, task ? 200 : 400)
   } catch (err) {
     next(err)
   }
