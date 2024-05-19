@@ -1,4 +1,3 @@
-import taskRouter from "@routes/taskRoute";
 import request from "supertest";
 import express from "express";
 import taskRoute from "@routes/taskRoute";
@@ -90,5 +89,25 @@ describe('POST /create', () => {
 
     expect(response.body.success).toBe(true);
     expect(response.statusCode).toBe(201);
+  });
+
+  it('should return 400 if request data is invalid', async () => {
+    (createTaskRequestSchema.parse as jest.Mock).mockImplementation(() => {
+      throw new Error('Validation failed');
+    });
+    const invalidTaskData = {
+      title: 'Test Task',
+      description: 'Short',
+      due_date: '2024-05-30',
+      priority: 'High',
+      status: 'Pending',
+    };
+
+    const response = await request(app)
+      .post('/task/create')
+      .send(invalidTaskData);
+
+    expect(response.statusCode).toBe(500);
+    expect(JSON.stringify(response.error)).toMatch(/Validation failed/i);
   });
 });

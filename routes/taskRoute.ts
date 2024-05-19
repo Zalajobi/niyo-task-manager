@@ -13,7 +13,6 @@ taskRouter.use(express.json())
 taskRouter.post('/create', async (req:Request, res:Response, next:NextFunction) => {
   try {
     const requestBody = createTaskRequestSchema.parse(req.body);
-
     requestBody.creatorId = verifyJSONToken(getCookieDataByKey(req?.headers?.cookie ?? '', 'jwt') as string, true).id ?? ''
 
     const newTask = await createTask(requestBody);
