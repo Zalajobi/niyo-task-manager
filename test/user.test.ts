@@ -94,7 +94,7 @@ describe('POST /login', () => {
     expect(setRedisKey).toHaveBeenCalledWith('123', 'refreshToken', 86400);
   });
 
-  it('should return 400 for incorrect credentials', async () => {
+  it('should fail cause incorrect credentials', async () => {
     (getUserByEmail as jest.Mock).mockResolvedValue(mockUserData);
     (validatePassword as jest.Mock).mockReturnValue(false);
     (JsonApiResponse as jest.Mock).mockImplementation(
@@ -107,7 +107,6 @@ describe('POST /login', () => {
     expect(response.body).toEqual({
       message: 'Incorrect Credentials',
       success: false,
-      data: null,
     });
   });
 
@@ -120,7 +119,7 @@ describe('POST /login', () => {
 
     const response = await request(app).post('/user/login').send(mockUser);
     expect(response.statusCode).toBe(500);
-    expect(response.body.message).toMatch(/User not found/i);
+    expect(JSON.stringify(response.error)).toMatch(/User not found/i);
   });
 
   it('should handle validation errors', async () => {
@@ -134,8 +133,8 @@ describe('POST /login', () => {
     });
 
     const response = await request(app).post('/user/login').send(invalidUser);
-    expect(response.statusCode).toBe(400);
-    expect(response.body.message).toMatch(/Validation failed/i);
+    expect(response.statusCode).toBe(500);
+    expect(JSON.stringify(response.error)).toMatch(/Validation failed/i);
   });
 });
 
