@@ -12,7 +12,7 @@ class RedisClient {
   private async init() {
     console.log('CONNECTING...');
     this.client = (await createClient({
-      password: REDIS_PASSWORD,
+      password: REDIS_PASSWORD ?? undefined,
       socket: {
         host: REDIS_HOST,
         port: Number(REDIS_PORT),
