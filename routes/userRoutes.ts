@@ -8,10 +8,12 @@ import {
 } from "@util/index";
 import {createSingleUser, getUserByEmail} from "@datastore/userStore";
 import {JsonApiResponse} from "@lib/response";
-import {NextFunction, Router, Response, Request} from "express";
+import express, {NextFunction, Router, Response, Request} from "express";
 import {TWENTY_FOUR_HOURS_SECONDS} from "@lib/config";
+import * as console from "node:console";
 
 const userRouter = Router();
+userRouter.use(express.json());
 
 userRouter.post('/create', async (req:Request, res:Response, next:NextFunction) => {
   try {
@@ -30,11 +32,10 @@ userRouter.post('/create', async (req:Request, res:Response, next:NextFunction) 
 
 userRouter.post('/login', async  (req:Request, res:Response, next:NextFunction) => {
   try {
-    const requestBody = userLoginRequestSchema.parse(req.body);
+    const {email, password} = userLoginRequestSchema.parse(req.body);
+    const user = await getUserByEmail(email);
 
-    const user = await getUserByEmail(requestBody.email);
-
-    if (validatePassword(requestBody.password, user.password)) {
+    if (validatePassword(password, user.password)) {
       const jwtPayload = {
         id: user.id,
         email: user?.email,
