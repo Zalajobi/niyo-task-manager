@@ -6,6 +6,7 @@ import { JsonApiResponse } from '@lib/response';
 
 const rootRouter = Router();
 
+// For load-balancer to check if the server is up
 rootRouter.get('/', (_req: Request, res: Response) => {
   return JsonApiResponse(res, 'Welcome to the Task Manager API', true, null, 200);
 });
