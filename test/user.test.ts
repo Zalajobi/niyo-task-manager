@@ -1,17 +1,17 @@
 import request from 'supertest';
-import {createSingleUser, getUserByEmail} from "@datastore/userStore";
+import { createSingleUser, getUserByEmail } from '@datastore/userStore';
 import {
   generateJWTAccessToken,
   generateJWTRefreshToken,
   generatePasswordHash,
   setRedisKey,
-  validatePassword
-} from "@util/index";
-import {createUserRequestSchema, userLoginRequestSchema} from "@schemas/usersSchemas";
-import express, {NextFunction, Request, Response} from "express";
-import {DefaultJsonResponse, JsonApiResponse} from "@lib/response";
-import {userRepo} from "@typeorm/repositories/userRepo";
-import userRouter from "@routes/userRoutes";
+  validatePassword,
+} from '@util/index';
+import { createUserRequestSchema, userLoginRequestSchema } from '@schemas/usersSchemas';
+import express, { NextFunction, Request, Response } from 'express';
+import { DefaultJsonResponse, JsonApiResponse } from '@lib/response';
+import { userRepo } from '@typeorm/repositories/userRepo';
+import userRouter from '@routes/userRoutes';
 
 jest.mock('@schemas/usersSchemas', () => ({
   createUserRequestSchema: {
@@ -58,7 +58,7 @@ jest.mock('@datastore/userStore', () => ({
 }));
 
 const app = express();
-app.use('/user', userRouter)
+app.use('/user', userRouter);
 app.use(express.json());
 
 describe('POST /login', () => {
@@ -79,9 +79,8 @@ describe('POST /login', () => {
     (generateJWTAccessToken as jest.Mock).mockReturnValue('accessToken');
     (generateJWTRefreshToken as jest.Mock).mockReturnValue('refreshToken');
     (userLoginRequestSchema.parse as jest.Mock).mockReturnValue(mockUser);
-    (JsonApiResponse as jest.Mock).mockImplementation(
-      (res, message, success, _, statusCode) =>
-        res.status(statusCode).send({ message, success })
+    (JsonApiResponse as jest.Mock).mockImplementation((res, message, success, _, statusCode) =>
+      res.status(statusCode).send({ message, success }),
     );
 
     const response = await request(app).post('/user/login').send(mockUser);
@@ -97,9 +96,8 @@ describe('POST /login', () => {
   it('should fail cause incorrect credentials', async () => {
     (getUserByEmail as jest.Mock).mockResolvedValue(mockUserData);
     (validatePassword as jest.Mock).mockReturnValue(false);
-    (JsonApiResponse as jest.Mock).mockImplementation(
-      (res, message, success, _, statusCode) =>
-        res.status(statusCode).send({ message, success })
+    (JsonApiResponse as jest.Mock).mockImplementation((res, message, success, _, statusCode) =>
+      res.status(statusCode).send({ message, success }),
     );
 
     const response = await request(app).post('/user/login').send(mockUser);
@@ -112,9 +110,8 @@ describe('POST /login', () => {
 
   it('should handle user not found error', async () => {
     (getUserByEmail as jest.Mock).mockRejectedValue(new Error('User not found'));
-    (JsonApiResponse as jest.Mock).mockImplementation(
-      (res, message, success, _, statusCode) =>
-        res.status(statusCode).send({ message, success })
+    (JsonApiResponse as jest.Mock).mockImplementation((res, message, success, _, statusCode) =>
+      res.status(statusCode).send({ message, success }),
     );
 
     const response = await request(app).post('/user/login').send(mockUser);
@@ -125,7 +122,7 @@ describe('POST /login', () => {
   it('should handle validation errors', async () => {
     const invalidUser = {
       email: 'invalid-email',
-      password: 'short'
+      password: 'short',
     };
 
     (userLoginRequestSchema.parse as jest.Mock).mockImplementation(() => {
@@ -138,34 +135,31 @@ describe('POST /login', () => {
   });
 });
 
-
 // Create User
 describe('POST /create', () => {
   const mockUser = {
     email: 'johnDoe@gmail.com',
     password: 'password123',
     first_name: 'John',
-    last_name: 'Doe'
+    last_name: 'Doe',
   };
 
   beforeEach(() => {
     mockRepository.findOne.mockResolvedValue(null);
     mockRepository.save.mockResolvedValue(mockUser);
-    (JsonApiResponse as jest.Mock).mockImplementation(
-      (res, message, success, _, statusCode) =>
-        res.status(statusCode).send({ message, success })
+    (JsonApiResponse as jest.Mock).mockImplementation((res, message, success, _, statusCode) =>
+      res.status(statusCode).send({ message, success }),
     );
     (createUserRequestSchema.parse as jest.Mock).mockImplementation((data: any) => data);
     (generatePasswordHash as jest.Mock).mockImplementation((password: string) => password);
-    (createSingleUser as jest.Mock).mockImplementation((data:any) => data)
-
-    (DefaultJsonResponse as jest.Mock).mockImplementation((message:string, data:any, success:boolean) => ({
-      message,
-      data,
-      success,
-    }));
+    (createSingleUser as jest.Mock)
+      .mockImplementation((data: any) => data)(DefaultJsonResponse as jest.Mock)
+      .mockImplementation((message: string, data: any, success: boolean) => ({
+        message,
+        data,
+        success,
+      }));
   });
-
 
   it('Should create a new user and return 201 status', async () => {
     const response = await request(app).post('/user/create').send(mockUser);
@@ -181,7 +175,7 @@ describe('POST /create', () => {
     (createSingleUser as jest.Mock).mockRejectedValue(new Error('Email already exists'));
     (JsonApiResponse as jest.Mock).mockImplementation(
       (res: Response, message: string, success: boolean, _: any, statusCode: number) =>
-        res.status(statusCode).send({ message, success })
+        res.status(statusCode).send({ message, success }),
     );
 
     const response = await request(app).post('/user/create').send(mockUser);
@@ -194,11 +188,13 @@ describe('POST /create', () => {
       throw new Error('Validation failed');
     });
 
-    const response = await request(app).post('/user/create').send({
-      ...mockUser,
-      email: 'invalid-email',
-      password: 'short'
-    });
+    const response = await request(app)
+      .post('/user/create')
+      .send({
+        ...mockUser,
+        email: 'invalid-email',
+        password: 'short',
+      });
 
     expect(response.statusCode).toBe(500);
     expect(JSON.stringify(response.error)).toMatch(/Validation failed/i);

@@ -3,4 +3,4 @@ export type JWTDataProps = {
   email: string;
   iat?: number;
   exp?: number;
-}
+};

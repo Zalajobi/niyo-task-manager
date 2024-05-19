@@ -1,8 +1,8 @@
-import {userRepo} from "@typeorm/repositories/userRepo";
-import {createUserRequestSchema} from "@schemas/usersSchemas";
-import {z} from "zod";
-import {DefaultJsonResponse} from "@lib/response";
-import {User} from "@typeorm/entity/user";
+import { userRepo } from '@typeorm/repositories/userRepo';
+import { createUserRequestSchema } from '@schemas/usersSchemas';
+import { z } from 'zod';
+import { DefaultJsonResponse } from '@lib/response';
+import { User } from '@typeorm/entity/user';
 
 export const createSingleUser = async (data: z.infer<typeof createUserRequestSchema>) => {
   const userRepository = userRepo();
@@ -17,14 +17,18 @@ export const createSingleUser = async (data: z.infer<typeof createUserRequestSch
 
   const user = await userRepository.save(data);
 
-  return DefaultJsonResponse(user ? 'User created successfully' : 'Failed to create user', null, !!user)
-}
+  return DefaultJsonResponse(
+    user ? 'User created successfully' : 'Failed to create user',
+    null,
+    !!user,
+  );
+};
 
-export const getUserByEmail = async (email: string):Promise<User> => {
+export const getUserByEmail = async (email: string): Promise<User> => {
   const userRepository = userRepo();
 
   const user = await userRepository.findOneBy({
-    email
+    email,
   });
 
   if (!user) {
@@ -32,17 +36,16 @@ export const getUserByEmail = async (email: string):Promise<User> => {
   }
 
   return user;
-}
+};
 
 export const getUserCountById = async (id: string): Promise<number> => {
   const userRepository = userRepo();
 
   const userCount = await userRepository.countBy({
-    id
+    id,
   });
 
-  if (userCount < 0)
-    throw new Error('User not found');
+  if (userCount < 0) throw new Error('User not found');
 
   return userCount;
-}
+};

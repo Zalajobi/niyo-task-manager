@@ -1,8 +1,8 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {TaskPriorityEnum, TaskStatusEnum} from "@typeorm/entity/enum";
-import {User} from "@typeorm/entity/user";
-import {z} from "zod";
-import {createTaskRequestSchema} from "@schemas/taskSchemas";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { TaskPriorityEnum, TaskStatusEnum } from '@typeorm/entity/enum';
+import { User } from '@typeorm/entity/user';
+import { z } from 'zod';
+import { createTaskRequestSchema } from '@schemas/taskSchemas';
 
 @Entity()
 export class Task {
@@ -22,12 +22,12 @@ export class Task {
   @Column({
     nullable: true,
   })
-  assigneeId: string
+  assigneeId: string;
 
   @Column({
     nullable: false,
   })
-  creatorId: string
+  creatorId: string;
 
   @Column({
     nullable: false,
@@ -62,13 +62,13 @@ export class Task {
   created_at: Date;
 
   // Relations
-  @ManyToOne(() => User, user => user.assignedTasks, {
+  @ManyToOne(() => User, (user) => user.assignedTasks, {
     nullable: true,
   })
   assignee: User;
 
-  @ManyToOne(() => User, user => user.createdTasks, {
-    nullable: false
+  @ManyToOne(() => User, (user) => user.createdTasks, {
+    nullable: false,
   })
   creator: User;
 }

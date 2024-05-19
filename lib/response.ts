@@ -6,7 +6,7 @@ export const JsonApiResponse = (
   success: boolean,
   data: Record<string, any> | Record<string, any>[] | null,
   statusCode: number,
-  error?: any
+  error?: any,
 ) => {
   res.status(statusCode).json({
     message,
@@ -16,11 +16,7 @@ export const JsonApiResponse = (
   });
 };
 
-export const DefaultJsonResponse = (
-  message: string,
-  data: any,
-  success: boolean
-) => {
+export const DefaultJsonResponse = (message: string, data: any, success: boolean) => {
   return {
     message,
     data,

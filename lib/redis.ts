@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from 'redis';
-import {REDIS_HOST, REDIS_PASSWORD, REDIS_PORT} from "@lib/config";
+import { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT } from '@lib/config';
 
 class RedisClient {
   private client: RedisClientType;

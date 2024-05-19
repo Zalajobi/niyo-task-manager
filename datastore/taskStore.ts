@@ -1,16 +1,16 @@
-import {createTaskRequestSchema} from "@schemas/taskSchemas";
-import {z} from "zod";
-import {taskRepo} from "@typeorm/repositories/taskRepo";
-import {Task} from "@typeorm/entity/task";
-import {DefaultJsonResponse} from "@lib/response";
+import { createTaskRequestSchema } from '@schemas/taskSchemas';
+import { z } from 'zod';
+import { taskRepo } from '@typeorm/repositories/taskRepo';
+import { Task } from '@typeorm/entity/task';
+import { DefaultJsonResponse } from '@lib/response';
 
 export const createTask = async (taskData: z.infer<typeof createTaskRequestSchema>) => {
   const taskRepository = taskRepo();
 
   const newTask = await taskRepository.save(new Task(taskData));
 
-  return DefaultJsonResponse(newTask ? 'Task Created' : 'Failed to create task', {}, !!newTask)
-}
+  return DefaultJsonResponse(newTask ? 'Task Created' : 'Failed to create task', {}, !!newTask);
+};
 
 export const updateTaskById = async (id: string, data: Object) => {
   const taskRepository = taskRepo();
@@ -19,24 +19,22 @@ export const updateTaskById = async (id: string, data: Object) => {
     {
       id,
     },
-    data
+    data,
   );
 
   return DefaultJsonResponse(
-    Number(updatedData?.affected) >= 1
-      ? 'Task Successfully Updated'
-      : 'Something Went Wrong',
+    Number(updatedData?.affected) >= 1 ? 'Task Successfully Updated' : 'Something Went Wrong',
     null,
-    Number(updatedData?.affected) >= 1
+    Number(updatedData?.affected) >= 1,
   );
-}
+};
 
 export const getTaskById = async (id: string) => {
   const taskRepository = taskRepo();
 
   const task = await taskRepository.findOne({
     where: {
-      id
+      id,
     },
     select: {
       title: true,
@@ -45,25 +43,23 @@ export const getTaskById = async (id: string) => {
       priority: true,
       status: true,
       assigneeId: true,
-      created_at: true
-    }
+      created_at: true,
+    },
   });
 
-  return DefaultJsonResponse(task ? 'Task Found' : 'Task not found', task, !!task)
-}
+  return DefaultJsonResponse(task ? 'Task Found' : 'Task not found', task, !!task);
+};
 
-export const deleteTaskById = async (id:string) => {
+export const deleteTaskById = async (id: string) => {
   const taskRepository = taskRepo();
 
   const deletedTask = await taskRepository.delete({
-    id
+    id,
   });
 
   return DefaultJsonResponse(
-    Number(deletedTask?.affected) >= 1
-      ? 'Task Successfully Deleted'
-      : 'Something Went Wrong',
+    Number(deletedTask?.affected) >= 1 ? 'Task Successfully Deleted' : 'Something Went Wrong',
     null,
-    Number(deletedTask?.affected) >= 1
+    Number(deletedTask?.affected) >= 1,
   );
-}
+};

@@ -1,15 +1,12 @@
-import {NextFunction, Response, Request} from "express";
-import {bearerTokenSchema} from "@schemas/commonSchema";
-import {generateJWTAccessToken, getRedisKey, verifyJSONToken} from "@util/index";
-import {JsonApiResponse} from "@lib/response";
-import {getUserCountById} from "@datastore/userStore";
-import {FIVE_MINUTE} from "@lib/config";
+import { NextFunction, Response, Request } from 'express';
+import { bearerTokenSchema } from '@schemas/commonSchema';
+import { generateJWTAccessToken, getRedisKey, verifyJSONToken } from '@util/index';
+import { JsonApiResponse } from '@lib/response';
+import { getUserCountById } from '@datastore/userStore';
+import { FIVE_MINUTE } from '@lib/config';
 
 export const authorizeRequest = async (req: Request, res: Response, next: NextFunction) => {
-  const whitelistedEndpoints = [
-    '/user/login',
-    '/user/create',
-  ];
+  const whitelistedEndpoints = ['/user/login', '/user/create'];
 
   if (whitelistedEndpoints.some((whitelist) => req.url.includes(whitelist))) {
     next();
@@ -17,8 +14,7 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
     const { cookie: accessToken } = bearerTokenSchema.parse(req.headers);
 
     // If Access token is not retrieved from cookies
-    if (!accessToken)
-      return JsonApiResponse(res, 'Not Authorized', false, null, 401);
+    if (!accessToken) return JsonApiResponse(res, 'Not Authorized', false, null, 401);
 
     try {
       const tokenUser = verifyJSONToken(accessToken, true);
