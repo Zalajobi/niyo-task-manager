@@ -25,7 +25,12 @@ npm --version
 #### PostgresSQL
 
 Ensure you have PostgresSQL installed on your local machine. You can download the installer from the [official website](https://www.postgresql.org/download/).
-create a database and user for the application.
+Create a database and user for the application.
+
+### Websocat
+To Read the stream data from the server, you need to install `websocat.` You can download the installer from the [GitHub Repo](https://github.com/vi/websocat)... 
+once installed you can run the following command to read the stream data from the server
+```bash websocat ws://localhost:${PORT_NUMBER}```
 
 #### Redis
 
@@ -66,3 +71,7 @@ To run the tests, run the following command:
 ```bash
 npm run test
 ```
+
+
+# Documentation
+
