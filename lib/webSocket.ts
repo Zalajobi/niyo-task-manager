@@ -37,9 +37,8 @@
 //   }
 // }
 
-
 // src/lib/websocket.ts
-import {WebSocket, WebSocketServer} from 'ws';
+import { WebSocket, WebSocketServer } from 'ws';
 import { Server } from 'http';
 
 let wss: WebSocketServer;
@@ -50,12 +49,12 @@ export const initializeWebSocket = (server: Server) => {
   wss.on('connection', (ws) => {
     console.log('Client connected');
   });
-}
+};
 
 export const broadcastMessage = (message: string) => {
-  wss.clients.forEach(client => {
+  wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(message);
     }
   });
-}
+};

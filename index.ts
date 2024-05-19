@@ -8,7 +8,7 @@ import { AppDataSource } from './data-source';
 import { errorMiddleware } from '@middleware/error';
 import { authorizeRequest } from '@middleware/jwt';
 import { createServer } from 'http';
-import {initializeWebSocket} from "@lib/webSocket";
+import { initializeWebSocket } from '@lib/webSocket';
 
 const app = express();
 app.use(express.json());
@@ -29,7 +29,7 @@ AppDataSource.initialize()
   })
   .catch((error) => console.log(error));
 
-const server = createServer(app)
+const server = createServer(app);
 
 server.listen(process.env.PORT ?? 3000, () => {
   console.log(`Example app listening on port ${process.env.PORT ?? 3000}`);

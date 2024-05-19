@@ -10,7 +10,7 @@ import { createSingleUser, getUserByEmail } from '@datastore/userStore';
 import { JsonApiResponse } from '@lib/response';
 import express, { NextFunction, Router, Response, Request } from 'express';
 import { TWENTY_FOUR_HOURS_SECONDS } from '@lib/config';
-import {broadcastMessage} from "@lib/webSocket";
+import { broadcastMessage } from '@lib/webSocket';
 
 const userRouter = Router();
 userRouter.use(express.json());
@@ -21,12 +21,14 @@ userRouter.post('/create', async (req: Request, res: Response, next: NextFunctio
     requestBody.password = generatePasswordHash(requestBody.password);
 
     const newUser = await createSingleUser(requestBody);
-    broadcastMessage(JSON.stringify({
-      message: 'New User',
-      email: requestBody.email,
-      firstName: requestBody.first_name,
-      lastName: requestBody.last_name
-    }));
+    broadcastMessage(
+      JSON.stringify({
+        message: 'New User',
+        email: requestBody.email,
+        firstName: requestBody.first_name,
+        lastName: requestBody.last_name,
+      }),
+    );
     return JsonApiResponse(res, newUser.message, !!newUser, null, newUser ? 201 : 400);
   } catch (error) {
     next(error);

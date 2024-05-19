@@ -6,7 +6,7 @@ import { generateJWTAccessToken, getCookieDataByKey, verifyJSONToken } from '@ut
 import { createTask, deleteTaskById, getTaskById, updateTaskById } from '@datastore/taskStore';
 import { DefaultJsonResponse, JsonApiResponse } from '@lib/response';
 import { getDataByIdRequestSchema } from '@schemas/commonSchema';
-import {broadcastMessage, initializeWebSocket} from "@lib/webSocket";
+import { broadcastMessage, initializeWebSocket } from '@lib/webSocket';
 
 const app = express();
 app.use('/task', taskRoute);
@@ -20,7 +20,7 @@ jest.mock('@util/index', () => ({
 
 jest.mock('@lib/webSocket', () => ({
   initializeWebSocket: jest.fn(),
-  broadcastMessage: jest.fn()
+  broadcastMessage: jest.fn(),
 }));
 
 jest.mock('@lib/response', () => ({
@@ -66,7 +66,7 @@ describe('POST /create', () => {
     (generateJWTAccessToken as jest.Mock).mockImplementation((data: any) => data);
     (createTask as jest.Mock).mockImplementation((data: any) => data);
     (initializeWebSocket as jest.Mock).mockImplementation(() => ({}));
-    (broadcastMessage as jest.Mock).mockImplementation((message:string) => message);
+    (broadcastMessage as jest.Mock).mockImplementation((message: string) => message);
     (JsonApiResponse as jest.Mock).mockImplementation((res, message, success, _, statusCode) =>
       res.status(statusCode).send({ message, success }),
     );
