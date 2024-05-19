@@ -78,13 +78,13 @@ describe('POST /login', () => {
     password: 'password123',
   };
 
-  it('Should login user and return 200 status', async () => {
-    const mockUserData = {
-      id: '123',
-      email: 'johnDoe@gmail.com',
-      password: 'hashedpassword',
-    };
+  const mockUserData = {
+    id: '123',
+    email: 'johnDoe@gmail.com',
+    password: 'hashedpassword',
+  };
 
+  it('Should login user and return 200 status', async () => {
     (getUserByEmail as jest.Mock).mockResolvedValue(mockUserData);
     (validatePassword as jest.Mock).mockReturnValue(true);
     (generateJWTAccessToken as jest.Mock).mockReturnValue('accessToken');
@@ -96,7 +96,6 @@ describe('POST /login', () => {
     );
 
     const response = await request(app).post('/user/login').send(mockUser);
-
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
       message: 'Success',
@@ -104,7 +103,51 @@ describe('POST /login', () => {
     });
     expect(response.headers['set-cookie'][0]).toContain('jwt=accessToken');
     expect(setRedisKey).toHaveBeenCalledWith('123', 'refreshToken', 86400);
-  })
+  });
+
+  it('should return 400 for incorrect credentials', async () => {
+    (getUserByEmail as jest.Mock).mockResolvedValue(mockUserData);
+    (validatePassword as jest.Mock).mockReturnValue(false);
+    (JsonApiResponse as jest.Mock).mockImplementation(
+      (res, message, success, _, statusCode) =>
+        res.status(statusCode).send({ message, success })
+    );
+
+    const response = await request(app).post('/user/login').send(mockUser);
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({
+      message: 'Incorrect Credentials',
+      success: false,
+      data: null,
+    });
+  });
+
+  it('should handle user not found error', async () => {
+    (getUserByEmail as jest.Mock).mockRejectedValue(new Error('User not found'));
+    (JsonApiResponse as jest.Mock).mockImplementation(
+      (res, message, success, _, statusCode) =>
+        res.status(statusCode).send({ message, success })
+    );
+
+    const response = await request(app).post('/user/login').send(mockUser);
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toMatch(/User not found/i);
+  });
+
+  it('should handle validation errors', async () => {
+    const invalidUser = {
+      email: 'invalid-email',
+      password: 'short'
+    };
+
+    (userLoginRequestSchema.parse as jest.Mock).mockImplementation(() => {
+      throw new Error('Validation failed');
+    });
+
+    const response = await request(app).post('/user/login').send(invalidUser);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toMatch(/Validation failed/i);
+  });
 });
 
 
