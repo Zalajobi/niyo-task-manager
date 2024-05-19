@@ -28,7 +28,6 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
         // If the remaining time is above 5 minutes, verify if the user exists
         // else, reset the accessToken and also check if the user exists
         if (remainingTime < FIVE_MINUTE) {
-          console.log("Remaining time less than 5 minutes")
           const refreshToken = await getRedisKey(tokenUser?.id);
           const verifiedRefreshToken = verifyJSONToken(refreshToken as string, false);
 
@@ -42,7 +41,6 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
                 httpOnly: true,
                 secure: true,
               });
-              console.log("Access Token Refreshed")
             } else {
               return JsonApiResponse(res, 'Not Authorized', false, null, 401);
             }
@@ -50,7 +48,6 @@ export const authorizeRequest = async (req: Request, res: Response, next: NextFu
         } else {
           // Check if user exists
           const userExists = await getUserCountById(tokenUser.id);
-          console.log("Remaining time more than 5 minutes")
           if (userExists === 0) {
             return JsonApiResponse(res, 'Not Authorized', false, null, 401);
           }
