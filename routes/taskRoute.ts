@@ -30,8 +30,7 @@ taskRouter.put('/update/:id', async (req:Request, res:Response, next:NextFunctio
     });
 
     const updatedTask = await updateTaskById(id, updateBody);
-
-    return JsonApiResponse(res, updatedTask.message, updatedTask.success, updatedTask.data, updatedTask.success ? 200 : 400)
+    return JsonApiResponse(res, updatedTask.message, !!updatedTask, updatedTask.data, updatedTask ? 200 : 400)
   } catch (err) {
     next(err)
   }
