@@ -4,8 +4,6 @@ import {getCookieDataByKey, verifyJSONToken} from "@util/index";
 import {JsonApiResponse} from "@lib/response";
 import {createTask, deleteTaskById, getTaskById, updateTaskById} from "@datastore/taskStore";
 import {getDataByIdRequestSchema} from "@schemas/commonSchema";
-import * as console from "node:console";
-import crypto from "crypto";
 
 const taskRouter = Router();
 taskRouter.use(express.json())
@@ -42,7 +40,7 @@ taskRouter.get('/:id', async (req:Request, res:Response, next:NextFunction) => {
 
     const task = await getTaskById(id);
 
-    return JsonApiResponse(res, task.message, task.success, task.data, task.success ? 200 : 400)
+    return JsonApiResponse(res, task.message, !!task, task.data, task ? 200 : 400)
   } catch (err) {
     next(err)
   }
