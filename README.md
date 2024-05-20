@@ -59,11 +59,15 @@ REDIS_PASSWORD="Redis PASSWORD"
 ### Installing
 
 - git clone https://github.com/Zalajobi/niyo-task-manager
-- cd niyo-task-manager
-- npm install
-- npm run start:dev # To start the application in development mode
-- npm run start # To start the application in production mode
+- ```bash cd niyo-task-manager``` # To navigate into the project directory
+- bash ```npm install``` # To install the project dependencies
+- bash ```npm start:dev``` # To start the application in development mode
+- bash ```npm start``` # To start the application in production mode
 
+### To start the project using Docker, run the following commands:
+```bash 
+docker-compose up --build
+```
 ## Running the tests
 
 To run the tests, run the following command:
