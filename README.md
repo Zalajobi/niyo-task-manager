@@ -426,3 +426,152 @@ The response body for a failed request will contain the following parameters/fie
 - JSON API Response: The response is sent back to the client in JSON format, indicating the success or failure of the operation.
 - Error Handling: If an error occurs during the task update process, an error object is included in the response body to provide details about the error.
 - Database Update: The task record in the database is updated with the new data provided in the request body.
+
+
+
+
+
+
+
+
+[//]: # (Get Task)
+## Get Task
+### Endpoint
+POST `/task/:id`
+Update an existing task by its ID.
+
+### Description
+This endpoint allows for getting an existing task. It validates the incoming request data against the `getDataByIdRequestSchema`, gets the task with the provided ID, and returns the task data.
+
+### Request
+#### Header(s)
+- "Content-Type": "application/json"
+- "Cookie": jwt=<access_token>
+
+#### Path Parameters
+- `id` (string): The ID of the task to be updated.
+
+##### Success Response
+The response will include a JSON object with a message indicating the login was successful. The JWT access token will be set as an HTTP-only cookie.
+- `status` (boolean): The status of the request. This will be `true`.
+- `message` (string): A message indicating the success of the operation.
+- `data` (object): The data returned by the request. This will be `null`.
+```json
+{
+  "message": "Task Found",
+  "success": true,
+  "data": {
+    "title": "Task 1",
+    "description": "This is task 1",
+    "due_date": "2022-12-31T00:00:00.000Z",
+    "priority": "HIGH",
+    "status": "DONE",
+    "assigneeId": "assignee_id",
+    "creatorId": "creator_id",
+    "id": "task_id",
+    "created_at": "2024-05-18T19:38:05.578Z"
+  }
+}
+```
+
+
+#### Headers
+This is set if the access token expiration is less than 5 minutes and the refresh token is still valid, the access token will be refreshed and set as an HTTP-only cookie.
+- ```Set-Cookie: jwt=<access_token>; HttpOnly; Secure```
+
+##### Failure Response
+The response body for a failed request will contain the following parameters/fields:
+- `status` (boolean): The status of the request. This will be `false`.
+- `message` (string): A message indicating the failure of the operation.
+- `data` (object): The data returned by the request. This will be `null`.
+- `error` (object): An object containing the error details.
+
+```json
+{
+  "message": "Task not found",
+  "success": false,
+  "data": null
+}
+```
+#### Implementation Details
+- Request Schema Validation: The request body is validated using `getDataByIdRequestSchema`. If the validation fails, an error is thrown.
+- JWT Token Verification: The JWT token from the cookie is verified using the `JWT_ACCESS_TOKEN` secret. If the token is invalid or expired, an error is thrown.
+- Get Task: The task with the provided ID is fetched from the database and returned to the client.
+- JSON API Response: The response is sent back to the client in JSON format, indicating the success or failure of the operation.
+- Error Handling: If an error occurs during the task retrieval process, an error object is included in the response body to provide details about the error.
+
+
+
+
+
+
+
+
+
+[//]: # (Delete Task)
+## Get Task
+### Endpoint
+POST `/task/delete/:id`
+Delete an existing task by its ID.
+
+### Description
+This endpoint allows for deleting a task by its ID. It validates the incoming request data against the `getDataByIdRequestSchema` and deletes the task with the provided ID.
+
+### Request
+#### Header(s)
+- "Content-Type": "application/json"
+- "Cookie": jwt=<access_token>
+
+#### Path Parameters
+- `id` (string): The ID of the task to be updated.
+
+##### Success Response
+The response will include a JSON object with a message indicating the login was successful. The JWT access token will be set as an HTTP-only cookie.
+- `status` (boolean): The status of the request. This will be `true`.
+- `message` (string): A message indicating the success of the operation.
+- `data` (object): The data returned by the request. This will be `null`.
+```json
+{
+  "message": "Task Successfully Deleted",
+  "success": true,
+  "data": null
+}
+```
+
+
+#### Headers
+This is set if the access token expiration is less than 5 minutes and the refresh token is still valid, the access token will be refreshed and set as an HTTP-only cookie.
+- ```Set-Cookie: jwt=<access_token>; HttpOnly; Secure```
+
+##### Failure Response
+The response body for a failed request will contain the following parameters/fields:
+- `status` (boolean): The status of the request. This will be `false`.
+- `message` (string): A message indicating the failure of the operation.
+- `data` (object): The data returned by the request. This will be `null`.
+- `error` (object): An object containing the error details.
+
+```json
+{
+  "message": "JWT Token Error",
+  "success": false,
+  "data": null,
+  "error": {
+    "type": "jwt_error",
+    "message": "jwt expired",
+    "name": "TokenExpiredError"
+  }
+}
+```
+#### Implementation Details
+- Request Schema Validation: The request body is validated using `getDataByIdRequestSchema`. If the validation fails, an error is thrown.
+- JWT Token Verification: The JWT token from the cookie is verified using the `JWT_ACCESS_TOKEN` secret. If the token is invalid or expired, an error is thrown.
+- Delete Task: The task with the provided ID is deleted from the database.
+- JSON API Response: The response is sent back to the client in JSON format, indicating the success or failure of the operation.
+- Error Handling: If an error occurs during the task deletion process, an error object is included in the response body to provide details about the error.
+- Database Update: The task record in the database is deleted based on the provided ID.
+
+
+
+
+
+
