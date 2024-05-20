@@ -88,8 +88,6 @@ The response includes a JSON object indicating the success
 or failure of the operation.
 
 
-
-
 ### Request
 #### Header(s)
 ```json
@@ -114,7 +112,7 @@ The request body should contain the following parameters/fields:
 
 #### Response(s)
 
-##### Success
+##### Success Response
 The response body for a successful request will contain the following parameters/fields:
 - `status` (boolean): The status of the request. This will be `true`.
 - `message` (string): A message indicating the success of the operation.
@@ -149,3 +147,69 @@ The response body for a failed request will contain the following parameters/fie
 ```
 
 ## Login User API
+### Endpoint
+POST `/user/login`
+Authenticate a user and provide JWT tokens for access and refresh.
+
+### Description
+This endpoint first validates incoming request data against the `userLoginRequestSchema`.
+It then checks if the user exists in the database and if the password provided matches 
+the hashed password in the database. If the user is authenticated successfully,
+it generates an access token and a refresh token for the user. The response
+includes a JSON object indicating the success or failure of the operation.
+
+### Request
+#### Header(s)
+```json
+"Content-Type": "application/json"
+```
+
+#### Body Parameters
+The request body should contain the following parameters/fields:
+- `email` (string): The email address of the user.
+- `password` (string): The password of the user.
+
+#### Example Request
+```json
+{
+    "email": "johnDoe@gmail.com",
+    "password": "password123"
+}
+```
+
+#### Response(s)
+
+##### Success Response
+The response will include a JSON object with a message indicating the login was successful. The JWT access token will be set as an HTTP-only cookie.
+- `status` (boolean): The status of the request. This will be `true`.
+- `message` (string): A message indicating the success of the operation.
+- `data` (object): The data returned by the request. This will be `null`.
+```json
+{
+    "status": true,
+    "message": "Success",
+    "data": null
+}
+```
+#### Headers
+```Set-Cookie: jwt=<access_token>; HttpOnly; Secure```
+
+##### Failure Response
+The response body for a failed request will contain the following parameters/fields:
+- `status` (boolean): The status of the request. This will be `false`.
+- `message` (string): A message indicating the failure of the operation.
+- `data` (object): The data returned by the request. This will be `null`.
+- `error` (object): An object containing the error details.
+
+```json
+{
+  "message": "Error",
+  "success": false,
+  "data": null,
+  "error": {
+    "type": "api_error",
+    "message": "User not found",
+    "name": "Error"
+  }
+}
+```
